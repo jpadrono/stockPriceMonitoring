@@ -1,0 +1,33 @@
+{
+  // ===== CONFIGURAÇÃO GERAL =====
+  "recipientEmail": "cliente.destinatario@exemplo.com",
+  "pollIntervalSeconds": 60,
+  "symbolSuffix": "",
+  "brapiToken": "OPCIONAL_SE_CLIENTE_TIVER",
+
+  // ===== ESCOLHA DO PROVEDOR SMTP =====
+  // provider:
+  //   - "gmail"
+  //   - "outlook"
+  //   - "mailbox" 
+  //   - "custom"  (preenche tudo na mão)
+  "smtp": {
+    "provider": "gmail",
+    "useProviderDefaults": true,
+
+    // Se useProviderDefaults = true:
+    //   - host/port/useSsl podem ser omitidos (o perfil preenche)
+    //   - se preencher, sobrescreve o default
+    "host": null,
+    "port": 0,
+    "useSsl": true,
+
+    // Credenciais SEMPRE precisam ser preenchidas pelo cliente:
+    "username": "seuemail@provedor.com",
+    "password": "SENHA_OU_APP_PASSWORD",
+
+    // Pode reutilizar username se deixar como null
+    "senderEmail": null,
+    "senderName": "Stock Alert Bot"
+  }
+}
