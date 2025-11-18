@@ -1,4 +1,4 @@
-using System.Net.Http;
+using System.Net;
 using System.Text.Json;
 using StockAlert.Config;
 
@@ -86,12 +86,23 @@ internal sealed class BrapiPriceProvider : IPriceProvider
 
     private static HttpClient CreateClient()
     {
-        var client = new HttpClient
+        var handler = new SocketsHttpHandler
         {
-            Timeout = TimeSpan.FromSeconds(10)
+            // Força HTTP/1.1 e evita alguns problemas de conexão mantida
+            PooledConnectionLifetime = TimeSpan.FromMinutes(2),
+            PooledConnectionIdleTimeout = TimeSpan.FromSeconds(30),
+            MaxConnectionsPerServer = 4
+        };
+
+        var client = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(10),
+            DefaultRequestVersion = HttpVersion.Version11,
+            DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower
         };
 
         client.DefaultRequestHeaders.UserAgent.ParseAdd("StockAlertBot/1.0 (+https://brapi.dev)");
         return client;
     }
+
 }

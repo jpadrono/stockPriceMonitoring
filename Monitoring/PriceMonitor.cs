@@ -44,7 +44,7 @@ internal sealed class PriceMonitor
                     var subject = $"Alerta de VENDA - {symbol} a {FormatPrice(price)}";
                     var body = ComposeBody(symbol, price, sellTarget, "venda");
                     await _alertSender.SendAsync(subject, body, cancellationToken);
-                    Console.WriteLine("E-mail de alerta de venda enviado.");
+                    Console.WriteLine("Alerta de venda enfileirado para envio.");
                 }
 
                 if (_alertState.ShouldSendBuy(price, buyTarget))
@@ -52,7 +52,7 @@ internal sealed class PriceMonitor
                     var subject = $"Alerta de COMPRA - {symbol} a {FormatPrice(price)}";
                     var body = ComposeBody(symbol, price, buyTarget, "compra");
                     await _alertSender.SendAsync(subject, body, cancellationToken);
-                    Console.WriteLine("E-mail de alerta de compra enviado.");
+                    Console.WriteLine("Alerta de compra enfileirado para envio.");
                 }
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -62,8 +62,9 @@ internal sealed class PriceMonitor
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine($"[{DateTimeOffset.Now:HH:mm:ss}] Falha ao monitorar: {ex.Message}");
+                Console.Error.WriteLine($"[{DateTimeOffset.Now:HH:mm:ss}] Falha ao monitorar: {ex}");
             }
+
 
             try
             {

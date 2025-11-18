@@ -2,6 +2,7 @@
 
 C# console tool for real-time B3 stock price monitoring.  
 Monitora um ativo da B3 em tempo real e dispara alertas por e-mail quando os preços ultrapassam limites configurados de compra e venda.
+O envio de e-mails é feito de forma assíncrona por meio de uma fila interna, evitando bloquear o loop de monitoramento.
 
 ---
 
@@ -38,6 +39,7 @@ O sistema coleta a cotação em tempo real via **Brapi.dev** e envia alertas por
 Principais características:
 
 - ✔ Monitoramento contínuo
+- - ✔ Envio de alertas por e-mail via fila assíncrona (QueuedAlertSender)
 - ✔ Suporte a vários provedores SMTP (Gmail, Outlook, MailBox, Custom)
 - ✔ Arquitetura modular com Strategy Pattern
 - ✔ Fácil extensão com novos providers
@@ -82,13 +84,13 @@ Passo a passo para executar o projeto pela primeira vez:
 5. **Executar o monitor**
 
    ```
-   dotnet run --project StockAlert -- <ATIVO> <PRECO_VENDA> <PRECO_COMPRA>
+   dotnet run -- <ATIVO> <PRECO_VENDA> <PRECO_COMPRA>
    ```
 
    Exemplo:
 
    ```
-   dotnet run --project StockAlert -- PETR4 22.67 22.50
+   dotnet run -- PETR4 22.67 22.50
    ```
 
 ---
@@ -116,6 +118,7 @@ A arquitetura foi projetada para ser modular, escalável e de fácil manutençã
 3. **Providers**
    - `BrapiPriceProvider` obtém preço em tempo real.
    - `SmtpAlertSender` envia e-mails usando SMTP e perfis (Gmail, Outlook, MailBox, Custom).
+   - `QueuedAlertSender` cria uma fila assíncrona de envio, desacoplando o tempo de IO de e-mail do caminho crítico do monitoramento.
 
 ---
 
@@ -133,6 +136,7 @@ A arquitetura foi projetada para ser modular, escalável e de fácil manutençã
 ### **Services/**
 - `IPriceProvider` + `BrapiPriceProvider`
 - `IAlertSender` + `SmtpAlertSender`
+- `QueuedAlertSender`
 
 ---
 
@@ -157,6 +161,7 @@ Services/
    ├── BrapiPriceProvider (API brapi.dev)
    ├── IAlertSender
    ├── SmtpAlertSender (envio de e-mail)
+   ├── QueuedAlertSender (fila assíncrona)
    └── SmtpProfileRegistry (Gmail, Outlook, MailBox, Custom)
 
 Config/

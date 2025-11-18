@@ -51,6 +51,8 @@ try
     IPriceProvider priceProvider = new BrapiPriceProvider(config);
     IAlertSender alertSender = new SmtpAlertSender(config);
 
+    await using var queuedSender = new QueuedAlertSender(alertSender, cts.Token);
+
     var monitor = new PriceMonitor(config, priceProvider, alertSender);
     await monitor.RunAsync(ticker, sellTarget, buyTarget, cts.Token);
 }
